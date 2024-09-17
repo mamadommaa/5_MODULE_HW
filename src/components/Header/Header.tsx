@@ -1,4 +1,4 @@
-// import LogoIcon from '../../assets/stair.svg?react';
+
 import LogoIcon from "../../assets/stair.svg?react"
 
 export const Header = () => {

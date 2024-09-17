@@ -4,7 +4,7 @@
       "id": "1",
       "name": "Mama's Kitchen",
       "description": "American, 4.7 stars",
-      "raiting": 4,
+      "raiting": 1,
       "url": "/mamas-kitchen.png"
     },
     {
@@ -18,7 +18,7 @@
       "id": "3",
       "name": "Pasta Express",
       "description": "American, 4.5 stars",
-      "raiting": 4,
+      "raiting": 1,
       "url": "/pasta-express.png"
     },
     {
