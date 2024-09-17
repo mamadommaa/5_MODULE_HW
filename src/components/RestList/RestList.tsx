@@ -1,10 +1,10 @@
-import { Restaurant } from "../../api";
+import {  RestaurantList } from "../../api";
 import './RestList.css';
 import React from 'react';
 import { Rest } from "../Rest/Rest";
 
 interface RestListProps {
-  rests: Restaurant[];
+  rests: RestaurantList;
   onRatingChange: (id: string, rating: number) => void; // Добавлено для получения функции
 }
 

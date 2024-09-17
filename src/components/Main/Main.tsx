@@ -1,23 +1,16 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getRestaurants, updateRestaurantRating } from "../../api";
+import { getRestaurants, RestaurantList, updateRestaurantRating } from "../../api";
 import { RestList } from "../RestList/RestList";
 import { Search } from "../Search/Search";
 import { useState, useEffect } from "react";
 
-// Определение типа ресторана
-interface Restaurant {
-  id: string;
-  name: string;
-  description: string;
-  raiting: number;
-  url: string;
-}
 
 export const Main = () => {
-  const { data, status } = useQuery<Restaurant[]>({
+
+  const RestaurantQuery = useQuery<RestaurantList>({
     queryFn: () => getRestaurants(),
     queryKey: ["rest"]
-  });
+  })
 
   const starMutation = useMutation({
     mutationFn: ({ id, raiting }: { id: string; raiting: number }) => updateRestaurantRating({ id, raiting })
@@ -27,13 +20,13 @@ export const Main = () => {
     starMutation.mutate({ id, raiting });
   };
 
-  const [temporaryRests, setTemporaryRests] = useState<Restaurant[]>(data || []);
+  const [temporaryRests, setTemporaryRests] = useState<RestaurantList>(RestaurantQuery.data || []);
 
   useEffect(() => {
-    if (data) {
-      setTemporaryRests(data);
+    if (RestaurantQuery.data) {
+      setTemporaryRests(RestaurantQuery.data);
     }
-  }, [data]);
+  }, [RestaurantQuery.data]);
 
   const sortRests = (search: string) => {
     if (!temporaryRests) return;
@@ -54,15 +47,16 @@ export const Main = () => {
 
     setTemporaryRests(sortedRests);
   };
-
-  if (status === "pending") return  <span>Загрузка</span>;
-  if (status === "error") return <span>Ошибка</span>;
-  if (status === "success") {
+switch(RestaurantQuery.status) {
+  case "pending": 
+     return <span>Загрузка</span>
+  case "error":
+    return <span>Ошибка</span>
+  case "success":
     return (
       <div>
-        <Search sortRests={sortRests} />
-        <RestList rests={temporaryRests} onRatingChange={onRatingChange} />
-      </div>
-    );
-  }
+      <Search sortRests={sortRests} />
+      <RestList rests={temporaryRests} onRatingChange={onRatingChange} />
+    </div>
+    );}
 };
