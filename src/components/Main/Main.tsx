@@ -4,13 +4,12 @@ import { RestList } from "../RestList/RestList";
 import { Search } from "../Search/Search";
 import { useState, useEffect } from "react";
 
-
 export const Main = () => {
 
   const RestaurantQuery = useQuery<RestaurantList>({
     queryFn: () => getRestaurants(),
     queryKey: ["rest"]
-  })
+  });
 
   const starMutation = useMutation({
     mutationFn: ({ id, raiting }: { id: string; raiting: number }) => updateRestaurantRating({ id, raiting })
@@ -28,35 +27,29 @@ export const Main = () => {
     }
   }, [RestaurantQuery.data]);
 
-  const sortRests = (search: string) => {
+  const filterRests = (search: string) => {
     if (!temporaryRests) return;
     const searchLower = search.toLowerCase();
 
-    const sortedRests = [...temporaryRests].sort((a, b) => {
-      const nameA = a.name.toLowerCase();
-      const nameB = b.name.toLowerCase();
-      const searchTerm = searchLower;
+    // Фильтрация списка ресторанов по имени
+    const filteredRests = RestaurantQuery.data?.filter(restaurant => 
+      restaurant.name.toLowerCase().includes(searchLower)
+    );
 
-      const matchesA = nameA.includes(searchTerm);
-      const matchesB = nameB.includes(searchTerm);
-
-      if (matchesA && !matchesB) return -1;
-      if (!matchesA && matchesB) return 1;
-      return 0;
-    });
-
-    setTemporaryRests(sortedRests);
+    setTemporaryRests(filteredRests || []);
   };
-switch(RestaurantQuery.status) {
-  case "pending": 
-     return <span>Загрузка</span>
-  case "error":
-    return <span>Ошибка</span>
-  case "success":
-    return (
-      <div>
-      <Search sortRests={sortRests} />
-      <RestList rests={temporaryRests} onRatingChange={onRatingChange} />
-    </div>
-    );}
+
+  switch(RestaurantQuery.status) {
+    case "pending": 
+      return <span>Загрузка</span>;
+    case "error":
+      return <span>Ошибка</span>;
+    case "success":
+      return (
+        <div>
+          <Search filterRests={filterRests} />
+          <RestList rests={temporaryRests} onRatingChange={onRatingChange} />
+        </div>
+      );
+  }
 };
