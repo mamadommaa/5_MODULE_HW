@@ -1,0 +1,15 @@
+.search {
+    width: 1200px; /* или любое другое значение */
+    margin: 0 auto;
+  }
+
+  .search__input {
+ width: 1200px;
+ padding: 20px;
+ border-radius: 20px;
+ border: 1 px solid gray;
+ margin-top: 20px;
+ margin-bottom: 20px;
+ font-size: 20px;
+  }
+  

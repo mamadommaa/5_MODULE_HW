@@ -66,3 +66,7 @@ footer {
 .corporation {
   align-self: flex-end;
 }
+
+.app {
+  margin: 0 auto;
+}

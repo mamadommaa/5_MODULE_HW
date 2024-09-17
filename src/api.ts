@@ -8,6 +8,8 @@ export interface Restaurant {
   url: string
 }
 
+export type RestaurantList = Restaurant[];
+
 export const getRestaurants = (): Promise<Restaurant[]> =>
   fetch(`${API_URL}/restaurants`).then((res) => res.json())
 

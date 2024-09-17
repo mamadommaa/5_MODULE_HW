@@ -5,12 +5,13 @@ import { Main } from './components/Main/Main'
 import './styles.css'
 
 function App() {
-  return (
-    <>
+  return (<div className='app'>
     <Header/>
     <Main/>
     <Footer/>
-    </>
+  </div>
+    
+
   )
 }
 

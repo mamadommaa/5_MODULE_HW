@@ -1,17 +1,33 @@
-import { getRestaurants } from "../../api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getRestaurants, updateRestaurantRating } from "../../api";
 import { RestList } from "../RestList/RestList";
 import { Search } from "../Search/Search";
-import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 
+// Определение типа ресторана
+interface Restaurant {
+  id: string;
+  name: string;
+  description: string;
+  raiting: number;
+  url: string;
+}
+
 export const Main = () => {
-  const { data, status } = useQuery({
+  const { data, status } = useQuery<Restaurant[]>({
     queryFn: () => getRestaurants(),
     queryKey: ["rest"]
   });
 
-  const [temporaryRests, setTemporaryRests] = useState(data || []); 
+  const starMutation = useMutation({
+    mutationFn: ({ id, raiting }: { id: string; raiting: number }) => updateRestaurantRating({ id, raiting })
+  });
 
+  const onRatingChange = (id: string, raiting: number) => {
+    starMutation.mutate({ id, raiting });
+  };
+
+  const [temporaryRests, setTemporaryRests] = useState<Restaurant[]>(data || []);
 
   useEffect(() => {
     if (data) {
@@ -39,15 +55,14 @@ export const Main = () => {
     setTemporaryRests(sortedRests);
   };
 
-  console.log(temporaryRests);      
-
-  if (status === "pending") return <span>Загрузка</span>;
+  if (status === "pending") return  <span>Загрузка</span>;
   if (status === "error") return <span>Ошибка</span>;
-
-  return (
-    <div>
-      <Search sortRests={sortRests} />
-      <RestList  /> {/* Передаем временные рестораны */}
-    </div>
-  );
+  if (status === "success") {
+    return (
+      <div>
+        <Search sortRests={sortRests} />
+        <RestList rests={temporaryRests} onRatingChange={onRatingChange} />
+      </div>
+    );
+  }
 };
